@@ -52,13 +52,10 @@ CREATE OR REPLACE PACKAGE BODY EMP_PKG AS
 
     FUNCTION get_employees RETURN emp_table_type IS
         v_emps emp_table_type;
-        CURSOR c_emps IS SELECT * FROM employees_copy;
         TYPE t_emps IS TABLE OF employees_copy%ROWTYPE;
         v_temp t_emps;
     BEGIN
-        OPEN c_emps;
-        FETCH c_emps BULK COLLECT INTO v_temp;
-        CLOSE c_emps;
+        SELECT * BULK COLLECT INTO v_temp FROM employees_copy;
 
         FOR i IN 1 .. v_temp.COUNT LOOP
             v_emps(v_temp(i).employee_id) := v_temp(i);
